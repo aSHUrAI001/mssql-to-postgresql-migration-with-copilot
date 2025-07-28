@@ -2,7 +2,7 @@
 
 Automated migration of SQL Server (MSSQL) schemas, views, and business logic to PostgreSQL using GitHub Copilot, Visual Studio Code, and the official PostgreSQL & SQL Server extensions.  
 Includes code examples, validation reports, and workflow documentation to showcase efficient, AI-assisted database modernization.
-
+![image](https://github.com/user-attachments/assets/e7ce6c6a-75ef-4578-9ef2-678458471e59)
 ---
 
 ## 🚀 Project Highlights
@@ -26,23 +26,23 @@ Includes code examples, validation reports, and workflow documentation to showca
 ### Original MSSQL View
 
 ```sql
-CREATE VIEW [dbo].[ONTRAC_BusinessDaysView] AS
+CREATE VIEW [dbo].[BusinessDaysView] AS
 SELECT
-  PKONTRAC_Visits AS FKONTRAC_Visits,
+  PK__Visits AS FK_Visits,
   CASE
     WHEN DATEDIFF(dd, GETDATE(), ExpectedDate) < 0 THEN -1
     WHEN DATEDIFF(dd, GETDATE(), ExpectedDate) = 0 THEN 0
     ELSE DATEDIFF(day, GETDATE(), ExpectedDate)
   END AS BusinessDaysToExpectedDate
-FROM ONTRAC_Visits;
+FROM Visits;
 ```
 
 ### Copilot-Assisted PostgreSQL Conversion
 
 ```sql
-CREATE OR REPLACE VIEW dbo.ontrac_businessdaysview AS
+CREATE OR REPLACE VIEW dbo.businessdaysview AS
 SELECT
-  v.pkontrac_visits AS fkontrac_visits,
+  v.pk_visits AS fk_visits,
   CASE
     WHEN (v.expecteddate < CURRENT_DATE) THEN -1
     WHEN (v.expecteddate = CURRENT_DATE) THEN 0
@@ -56,7 +56,7 @@ SELECT
       WHERE EXTRACT(ISODOW FROM d.day) < 6 -- Mon-Fri only
     )
   END AS businessdaystoexpecteddate
-FROM dbo.ontrac_visits v;
+FROM dbo.visits v;
 ```
 
 **Explanation:**  
@@ -70,13 +70,13 @@ FROM dbo.ontrac_visits v;
 ## 🧪 Validation Report Example
 
 ```markdown
-# Validation Report: dbo.ontrac_businessdaysview
+# Validation Report: dbo.businessdaysview
 
 **Test Query:**
 SELECT * FROM dbo.ontrac_businessdaysview LIMIT 10;
 
 **Result Set:**
- fkontrac_visits | businessdaystoexpecteddate
+ fk_visits | businessdaystoexpecteddate
 -----------------+--------------------------
                1 |                       -1
                2 |                        10
@@ -99,29 +99,10 @@ SELECT * FROM dbo.ontrac_businessdaysview LIMIT 10;
   Caught and fixed issues like unsupported functions and type mismatches with Copilot's suggestions and extension error highlighting.
 - **Speed:**  
   Reduced migration time by generating ready-to-execute PostgreSQL code and validation scripts, all without leaving VS Code.
-
----
-
-## 📸 Screenshots
-
-- Original MSSQL code in SSMS/VS Code.
-- Copilot suggestions in VS Code.
-- Final PostgreSQL code.
-- Terminal output of test queries.
-- Validation report file.
-
+  
 ---
 
 > “GitHub Copilot, combined with VS Code and the official database extensions, has been a game-changer in my database migration projects, enabling rapid, reliable, and well-documented transitions from legacy SQL Server environments to modern PostgreSQL platforms.”
-
----
-
-## 📂 Repo Structure
-
-- `/mssql/` — Original SQL Server scripts
-- `/postgres/` — Converted PostgreSQL scripts
-- `/validation/` — Validation reports and result sets
-- `/screenshots/` — Visual documentation
 
 ---
 
